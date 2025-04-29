@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { JobType } from '@/lib/database.types';
 import Link from 'next/link';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
 interface Job {
   id: number;
@@ -20,6 +21,7 @@ export default function DashboardPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [jobToDelete, setJobToDelete] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchMyJobs = async () => {
@@ -49,10 +51,6 @@ export default function DashboardPage() {
   }, [router]);
 
   const handleDelete = async (jobId: number) => {
-    if (!confirm('Are you sure you want to delete this job post?')) {
-      return;
-    }
-
     try {
       const { error: deleteError } = await supabase
         .from('jobs')
@@ -61,10 +59,11 @@ export default function DashboardPage() {
 
       if (deleteError) throw deleteError;
 
-      // Update state to remove the deleted job
       setJobs((prev) => prev.filter(job => job.id !== jobId));
     } catch (error) {
-      alert('Failed to delete: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      setError(error instanceof Error ? error.message : 'An error occurred while deleting the job');
+    } finally {
+      setJobToDelete(null);
     }
   };
 
@@ -145,7 +144,7 @@ export default function DashboardPage() {
                       Edit
                     </Link>
                     <button
-                      onClick={() => handleDelete(job.id)}
+                      onClick={() => setJobToDelete(job.id)}
                       className="text-red-600 hover:text-red-700 font-medium"
                     >
                       Delete
@@ -156,6 +155,16 @@ export default function DashboardPage() {
             ))}
           </div>
         )}
+
+        <ConfirmDialog
+          isOpen={jobToDelete !== null}
+          onClose={() => setJobToDelete(null)}
+          onConfirm={() => jobToDelete && handleDelete(jobToDelete)}
+          title="Delete Job Post"
+          message="Are you sure you want to delete this job post? This action cannot be undone."
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+        />
       </div>
     </div>
   );

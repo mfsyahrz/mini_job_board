@@ -18,7 +18,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="text-xl font-bold text-primary">
@@ -59,7 +59,7 @@ export default function NavBar() {
                     </Link>
                     <Link 
                       href="/signup" 
-                      className="bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+                      className="btn-primary"
                     >
                       Sign Up
                     </Link>

@@ -9,9 +9,18 @@ module.exports = {
     extend: {
       colors: {
         primary: '#0070f3',
-        secondary: '#1a1a1a',
+        secondary: '#f5f7fa',
+        background: '#f5f7fa',
+        card: '#ffffff',
+        text: {
+          primary: '#333333',
+          secondary: '#666666',
+          muted: '#888888',
+        },
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 } 

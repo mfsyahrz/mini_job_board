@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { JobType } from '@/lib/database.types';
+import Link from 'next/link';
 
 interface Job {
   id: number;
@@ -52,15 +53,15 @@ export default function HomePage() {
   }, [locationFilter, typeFilter]);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12">
-      <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">Job Listings</h1>
+    <div className="min-h-screen bg-background">
+      <div className="container py-8">
+        <h1 className="page-title">Job Listings</h1>
 
         {/* Filter Controls */}
-        <div className="bg-white shadow-md rounded-lg p-6 mb-8">
+        <div className="card mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="location" className="form-label">
                 Filter by Location
               </label>
               <input
@@ -69,18 +70,18 @@ export default function HomePage() {
                 placeholder="Enter city or country..."
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                className="form-input"
               />
             </div>
             <div>
-              <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="type" className="form-label">
                 Filter by Job Type
               </label>
               <select
                 id="type"
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value as JobType | '')}
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                className="form-input"
               >
                 <option value="">All Types</option>
                 <option value="Full-Time">Full-Time</option>
@@ -95,37 +96,34 @@ export default function HomePage() {
         {loading && (
           <div className="text-center py-8">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent"></div>
-            <p className="mt-2 text-gray-600">Loading jobs...</p>
+            <p className="mt-2 text-text-secondary">Loading jobs...</p>
           </div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-8" role="alert">
-            <span className="block sm:inline">{error}</span>
+          <div className="bg-red-50 border border-red-400 text-red-700 p-4 rounded-md mb-8">
+            {error}
           </div>
         )}
 
         {/* Jobs List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
           {jobs.map((job) => (
-            <div
-              key={job.id}
-              className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">{job.title}</h2>
-              <p className="text-gray-600 mb-2">{job.company}</p>
-              <p className="text-gray-500 mb-4">{job.location}</p>
+            <div key={job.id} className="card hover:shadow-md transition-shadow">
+              <h2 className="text-xl font-semibold text-text-primary mb-2">{job.title}</h2>
+              <p className="text-text-secondary mb-1">{job.company}</p>
+              <p className="text-text-muted mb-4">{job.location}</p>
               <div className="flex justify-between items-center">
-                <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm">
+                <span className="bg-secondary text-text-secondary px-3 py-1 rounded-full text-sm">
                   {job.type}
                 </span>
-                <a
-                  href={`/jobs/${job.id}`}
-                  className="text-primary hover:text-blue-600 font-medium"
+                <Link 
+                  href={`/jobs/${job.id}`} 
+                  className="text-primary hover:text-blue-700 font-medium"
                 >
                   View Details →
-                </a>
+                </Link>
               </div>
             </div>
           ))}
@@ -133,8 +131,8 @@ export default function HomePage() {
 
         {/* Empty State */}
         {!loading && jobs.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-gray-600">No jobs found matching your criteria.</p>
+          <div className="card text-center py-8">
+            <p className="text-text-secondary">No jobs found matching your criteria.</p>
           </div>
         )}
       </div>
