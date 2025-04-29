@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useEffect } from "react";
-import { supabase } from "../../lib/supabaseClient";
-import { Database } from "../../lib/database.types";
+import { supabase } from "@/lib/supabaseClient";
+import { Database } from "@/lib/database.types";
 
 export default function Home() {
   useEffect(() => {
