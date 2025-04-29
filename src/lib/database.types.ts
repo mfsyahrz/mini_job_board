@@ -6,45 +6,41 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+export type JobType = 'Full-Time' | 'Part-Time' | 'Contract';
+
 export interface Database {
   public: {
     Tables: {
       jobs: {
         Row: {
           id: number
-          created_at: string
+          user_id: string
           title: string
           company: string
-          location: string
           description: string
-          salary_range: string | null
-          requirements: string[]
-          benefits: string[]
-          application_url: string
+          location: string
+          type: JobType
+          created_at: string
         }
         Insert: {
           id?: number
-          created_at?: string
+          user_id: string
           title: string
           company: string
-          location: string
           description: string
-          salary_range?: string | null
-          requirements: string[]
-          benefits: string[]
-          application_url: string
+          location: string
+          type: JobType
+          created_at?: string
         }
         Update: {
           id?: number
-          created_at?: string
+          user_id?: string
           title?: string
           company?: string
-          location?: string
           description?: string
-          salary_range?: string | null
-          requirements?: string[]
-          benefits?: string[]
-          application_url?: string
+          location?: string
+          type?: JobType
+          created_at?: string
         }
       }
     }
