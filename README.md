@@ -43,14 +43,19 @@ src/
 
 ### Environment Setup
 1. Create a Supabase project at [supabase.com](https://supabase.com)
-2. Create a `.env.local` file:
+2. Get your project credentials:
+   - Go to Project Settings > API
+   - Copy the `Project URL` (for NEXT_PUBLIC_SUPABASE_URL)
+   - Copy the `anon` public API key (for NEXT_PUBLIC_SUPABASE_ANON_KEY)
+3. Create a `.env.local` file in the project root:
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 ```
 
 ### Database Setup
-Create the following tables in Supabase:
+1. Go to Supabase SQL Editor
+2. Run the following SQL commands to create the necessary tables and policies:
 
 ```sql
 create table jobs (
@@ -88,20 +93,23 @@ create policy "Allow users to delete their own jobs"
   using (auth.uid() = created_by);
 ```
 
-### Installation Steps
-
+### Local Development
 1. Clone the repository:
 ```bash
 git clone https://github.com/mfsyahrz/mini_job_board.git
 cd mini-job-board
-```2. Install dependencies:
+```
+
+2. Install dependencies:
 ```bash
 npm install
 ```
+
 3. Run development server:
 ```bash
 npm run dev
 ```
+The app will be available at `http://localhost:3000`
 
 4. Build for production:
 ```bash
@@ -113,47 +121,129 @@ npm run build
 npm start
 ```
 
+### Authentication Setup
+1. Go to Supabase Authentication Settings
+2. Enable Email provider under Authentication > Providers
+3. (Optional) Configure additional providers like Google, GitHub, etc.
+4. Test user signup/login flow at `http://localhost:3000/signup`
+
+### Troubleshooting
+- If you encounter CORS issues, ensure your site URL is added to Supabase's API Settings
+- For auth issues, check if your environment variables are correctly set
+- For database errors, verify that the RLS policies are properly configured
+
 ## Development Approach
 
-### Component Architecture
-- **Server Components**: Used for static content and initial data fetching
-- **Client Components**: Used for interactive features and forms
-- **Shared Components**: Reusable UI elements like ConfirmDialog
+### Project Structure
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── dashboard/         # Job management dashboard
+│   ├── jobs/             # Job viewing pages
+│   ├── login/            # Authentication
+│   ├── signup/           # User registration
+│   └── post-job/         # Job posting form
+├── components/           # Shared React components
+└── lib/                 # Utilities and type definitions
+```
 
-### State Management
-- Local state with React hooks for form handling
-- Supabase real-time subscriptions for auth state
-- Server-side state management with Next.js App Router
+The project follows a modular architecture with clear separation of concerns:
 
-### Authentication Flow
-1. User signs up/logs in using Supabase Auth
-2. JWT tokens stored securely in cookies
-3. Protected routes handled by middleware
-4. User state managed through AuthContext
+- **App Router Organization**: Using Next.js 15 App Router for file-based routing and nested layouts
+- **Database Layer**: Centralized Supabase client in `lib/supabaseClient.ts` for all database operations
+- **Authentication**: Supabase Auth with context provider pattern in `lib/AuthContext.tsx`
+- **Type Safety**: TypeScript interfaces for database schema in `lib/database.types.ts`
+- **UI Components**: Reusable components in `components/` directory
+- **Styling**: Tailwind CSS with custom utility classes in `globals.css`
 
-### Data Fetching Strategy
-- Server-side fetching for initial page loads
-- Client-side fetching for dynamic updates
-- Error boundaries for graceful error handling
+### Data Flow
 
-## Production Considerations
+#### Job Listing Flow
+```
+Client          Homepage            Supabase
+  │                │                   │
+  │    Visit       │                   │
+  │───────────────>│                   │
+  │                │    Fetch jobs     │
+  │                │──────────────────>│
+  │                │   Return list     │
+  │                │<──────────────────│
+  │   Show jobs    │                   │
+  │<───────────────│                   │
+  │                │                   │
+  │  Click job     │    Job Detail    │
+  │───────────────────────────────────>│
+  │                │   Fetch details   │
+  │                │<─────────────────>│
+  │  Show details  │                   │
+  │<──────────────────────────────────│
+```
 
-### Performance
-- Static page generation where possible
-- Dynamic routes for user-specific content
-- Image optimization with Next.js Image
-- Tailwind CSS for minimal CSS bundle
+#### Authentication Flow
+```
+Client          Auth Page         Supabase Auth      Context
+  │                │                   │                │
+  │ Login/Signup   │                   │                │
+  │───────────────>│                   │                │
+  │                │   Credentials     │                │
+  │                │──────────────────>│                │
+  │                │  Session token    │                │
+  │                │<──────────────────│                │
+  │                │                   │  Update state  │
+  │                │───────────────────────────────────>│
+  │                │                   │   Redirect     │
+  │<──────────────────────────────────────────────────│
+```
 
-### Security
-- Environment variables for sensitive data
-- Row Level Security in Supabase
-- Protected API routes
-- Type-safe database operations
+#### Job Management Flow
+```
+Client          Dashboard           Supabase
+  │                │                   │
+  │  Create job    │                   │
+  │───────────────>│                   │
+  │                │   Verify auth     │
+  │                │──────────────────>│
+  │                │    Confirmed      │
+  │                │<──────────────────│
+  │                │   Save job        │
+  │                │──────────────────>│
+  │                │   Success/Error   │
+  │                │<──────────────────│
+  │  Update UI     │                   │
+  │<───────────────│                   │
+  │                │                   │
+  │            Real-time updates       │
+  │<───────────────────────────────────│
+```
 
-### SEO
-- Server-side rendering for better indexing
-- Dynamic metadata for job listings
-- Semantic HTML structure
+### Implemented Features
+
+#### Public Features
+- View all job listings
+- Search and filter jobs by location and type
+- Detailed view of individual job posts
+- User registration and authentication
+- Responsive design for all screen sizes
+
+#### Authenticated Features
+- Post new job listings
+- Edit existing job posts
+- Delete job posts
+- Dashboard for managing job posts
+- Session management
+
+#### Security Features
+- Protected routes with middleware
+- Row Level Security in database
+- Secure authentication flow
+- Input validation and sanitization
+
+#### UI/UX Features
+- Loading states and error handling
+- Responsive design with Tailwind CSS
+- Form validation and error messages
+- Confirmation dialogs for destructive actions
+- Clean and intuitive navigation
 
 ## Future Improvements
 
@@ -173,6 +263,7 @@ Given more development time, these areas could be enhanced:
 - Automated accessibility testing
 - Performance monitoring with analytics
 - CI/CD pipeline improvements
+- Cursor-based pagination for job listings
 
 ### User Experience
 - Enable OAuth providers (Google, Facebook, etc.) for login
