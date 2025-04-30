@@ -2,12 +2,11 @@ import { supabase } from '@/lib/supabaseClient';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
-export default async function Page({ params }: { params: { id: string } }) {
-  // Fetch the job by ID
+export default async function Page(props: any) {
   const { data: job, error } = await supabase
     .from('jobs')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', props.params.id)
     .single();
 
   if (error || !job) {
