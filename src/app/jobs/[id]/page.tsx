@@ -4,10 +4,9 @@ import Link from 'next/link';
 
 interface PageProps {
   params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function JobDetailPage({ params, searchParams }: PageProps) {
+export default async function Page({ params }: PageProps) {
   // Fetch the job by ID
   const { data: job, error } = await supabase
     .from('jobs')
