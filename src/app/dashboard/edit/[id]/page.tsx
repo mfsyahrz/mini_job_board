@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { JobType } from '@/lib/database.types';
 import Link from 'next/link';
 
-export default function EditJobPage({ params }: { params: { id: string } }) {
+export default function EditJobPage({ params }: { params: { id: string } } & { searchParams: { [key: string]: string | string[] | undefined } }) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [company, setCompany] = useState('');
