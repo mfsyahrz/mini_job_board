@@ -2,11 +2,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
-interface PageProps {
-  params: { id: string };
-}
-
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params }: { params: { id: string } }) {
   // Fetch the job by ID
   const { data: job, error } = await supabase
     .from('jobs')
