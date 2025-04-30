@@ -4,36 +4,6 @@ A modern job board application built with Next.js 15, TypeScript, and Supabase, 
 
 **Live Demo**: [https://mini-job-board-gules.vercel.app/](https://mini-job-board-gules.vercel.app/)
 
-## Architecture Overview
-
-### Tech Stack
-- **Frontend**: Next.js 15.3.1 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Backend/Database**: Supabase
-- **Authentication**: Supabase Auth
-- **Deployment**: Vercel
-
-### Project Structure
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── dashboard/         # Job management dashboard
-│   ├── jobs/             # Job viewing pages
-│   ├── login/            # Authentication
-│   ├── signup/           # User registration
-│   └── post-job/         # Job posting form
-├── components/           # Shared React components
-└── lib/                 # Utilities and type definitions
-```
-
-### Key Features
-- Server-side rendering for better SEO
-- Client-side components for interactive features
-- Type-safe database operations
-- Protected routes with middleware
-- Responsive design with Tailwind CSS
-
 ## Development Setup
 
 ### Prerequisites
@@ -132,7 +102,7 @@ npm start
 - For auth issues, check if your environment variables are correctly set
 - For database errors, verify that the RLS policies are properly configured
 
-## Development Approach
+## Architecture Overview
 
 ### Project Structure
 ```
